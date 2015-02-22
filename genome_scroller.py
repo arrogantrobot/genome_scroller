@@ -5,9 +5,9 @@ from random import uniform
 from pyglet import clock, font, image, window
 from pyglet.gl import *
 
-import random
 import sys
 from textnozzle import TextNozzle
+import cursebuf
 
 class Camera(object):
 
@@ -40,14 +40,12 @@ class Hud(object):
         self.tn = TextNozzle(input_file, line_width) 
         self.win = win
         self.helv = font.load('Helvetica', win.width / 150.0)
-        self.text = self.get_text()
+        self.cb = cursebuf.cursebuf( 10 )
 
     def pull_from_file(self):
         return self.tn.get_line()
 
-
     def get_text(self):
-        line = str(random.random())
         return font.Text(
             self.helv,
             self.pull_from_file(),
@@ -58,12 +56,14 @@ class Hud(object):
             color=(1, 1, 1, 0.5),
         )
 
+    def draw_texts(self):
+        self.get_text().draw()
+
     def draw(self):
         glClear(GL_COLOR_BUFFER_BIT)
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        self.get_text().draw()
-
+        self.draw_texts()
 
 class App(object):
 
