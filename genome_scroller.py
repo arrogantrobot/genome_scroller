@@ -6,7 +6,7 @@ from pyglet import clock, font, image, window
 from pyglet.gl import *
 
 import sys
-from textnozzle import TextNozzle
+from textnozzle_chrom import TextNozzleChrom
 import cursebuf
 
 class Camera(object):
@@ -56,22 +56,38 @@ class Hud(object):
 
     def __init__(self, win, input_file, line_width):
         self.counter = 0
-        self.tn = TextNozzle(input_file, line_width) 
+        self.tn = TextNozzleChrom(input_file, line_width) 
         self.win = win
+        self.chrom = "blah"
         self.helv = font.load('Helvetica', win.width / 150.0)
-        self.cb = cursebuf.cursebuf(100, self.get_text_object())
+        self.cb = cursebuf.cursebuf(100, self.get_text_object(self.pull_from_file()))
+        self.chrom_object = self.get_text_object(self.chrom)
 
-    def get_text_object(self):
+    def get_text_object(self, text):
         return Line(
             self.helv,
-            self.pull_from_file(),
+            text,
             self.win.width/2,
             -10,
             (1,1,1,1)
         ) 
+        
+    def get_chrom_text_object(self, text):
+        print text
+        return Line(
+            self.helv,
+            text,
+            10,
+            int(self.win.height * 0.75),
+            (1,1,1,1)
+        ) 
 
     def pull_from_file(self):
-        return self.tn.get_line()
+        (chrom, line) = self.tn.get_line()
+        if chrom != self.chrom:
+          self.chrom_object = self.get_chrom_text_object(chrom)
+          self.chrom = chrom
+        return line
 
     def get_text(self):
         return font.Text(
@@ -89,16 +105,20 @@ class Hud(object):
     def draw_texts(self):
         if self.counter > 15:
             self.counter = 0
-            self.cb.add_line(self.get_text_object())
+            self.cb.add_line(self.get_text_object(self.pull_from_file()))
         map(lambda text: text.increment(), self.cb.get_buf())
         map(lambda text: text.draw(), self.cb.get_buf())
         self.increment()
 
+    def draw_chrom(self):
+        self.chrom_object.draw()
+
     def draw(self):
         glClear(GL_COLOR_BUFFER_BIT)
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
         self.draw_texts()
+        self.draw_chrom()
 
 class App(object):
 
@@ -108,7 +128,7 @@ class App(object):
         self.hud = Hud(self.win, input_file, 200)
 
     def mainLoop(self):
-        clock.set_fps_limit(60)
+        clock.set_fps_limit(25)
         while not self.win.has_exit:
             self.win.dispatch_events()
             self.camera.hudProjection()
