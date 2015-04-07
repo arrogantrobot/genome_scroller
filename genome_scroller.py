@@ -58,9 +58,9 @@ class Hud(object):
         self.counter = 0
         self.tn = TextNozzleChrom(input_file, line_width) 
         self.win = win
-        self.chrom = "blah"
-        self.helv = font.load('Helvetica', win.width / 150.0)
-        self.cb = cursebuf.cursebuf(100, self.get_text_object(self.pull_from_file()))
+        self.chrom = "bh"
+        self.helv = font.load('Monaco', win.width / 150.0)
+        self.cb = cursebuf.cursebuf(60, self.get_text_object(self.pull_from_file()))
         self.chrom_object = self.get_text_object(self.chrom)
 
     def get_text_object(self, text):
@@ -73,13 +73,12 @@ class Hud(object):
         ) 
         
     def get_chrom_text_object(self, text):
-        print text
         return Line(
             self.helv,
             text,
-            10,
-            int(self.win.height * 0.75),
-            (1,1,1,1)
+            200,
+            self.win.height - 20 ,
+            (1,0,0,1)
         ) 
 
     def pull_from_file(self):
@@ -111,9 +110,16 @@ class Hud(object):
         self.increment()
 
     def draw_chrom(self):
+        pyglet.gl.glColor4f(0.0, 0.0, 0.0, 1.0)
+        y1 = self.win.height
+        y2 = y1 - 50
+        x1 = 0
+        x2 = 400
+        pyglet.graphics.draw(4, pyglet.gl.GL_QUADS, ('v2f', (x1, y1, x1, y2, x2, y2, x2, y1)))
         self.chrom_object.draw()
 
     def draw(self):
+        print "{0} text objects".format(len(self.cb.get_buf()))
         glClear(GL_COLOR_BUFFER_BIT)
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
@@ -125,7 +131,7 @@ class App(object):
     def __init__(self, input_file):
         self.win = window.Window(fullscreen=True)
         self.camera = Camera(self.win, zoom=100.0)
-        self.hud = Hud(self.win, input_file, 200)
+        self.hud = Hud(self.win, input_file, 189)
 
     def mainLoop(self):
         clock.set_fps_limit(25)

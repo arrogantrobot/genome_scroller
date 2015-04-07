@@ -10,8 +10,8 @@ class TextNozzleChrom:
     self.source = source
     self.char_queue = []
     self.chrom = "blah"
-    self.readline_set_chrom()
     self.open_file()
+    self.readline_set_chrom()
 
   def open_file(self):
     self.fh = open(self.source, 'r')
@@ -28,8 +28,8 @@ class TextNozzleChrom:
       return " "
     self.check_queue()
     char = self.read_from_queue()
-    while not char.isalpha():
-      char = self.read_from_queue()
+    #while not char.isalpha():
+    #  char = self.read_from_queue()
     return char
   
   def check_queue(self):
@@ -42,9 +42,10 @@ class TextNozzleChrom:
     self.char_queue = list(self.readline_set_chrom())
 
   def readline_set_chrom(self):
-    line = self.fh.readline()
+    line = self.fh.readline().strip()
     if line.startswith(">"):
       self.chrom = line[1:]
+      print self.chrom
       line = self.readline_set_chrom()
     return line
 
