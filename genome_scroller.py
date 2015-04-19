@@ -130,6 +130,7 @@ class App(object):
 
     def __init__(self, input_file):
         self.win = window.Window(fullscreen=True)
+        self.win.set_mouse_visible(False)
         self.camera = Camera(self.win, zoom=100.0)
         self.hud = Hud(self.win, input_file, 189)
 
