@@ -76,7 +76,7 @@ class Hud(object):
         return Line(
             self.helv,
             text,
-            200,
+            350,
             self.win.height - 20 ,
             (1,0,0,1)
         ) 
@@ -114,7 +114,7 @@ class Hud(object):
         y1 = self.win.height
         y2 = y1 - 50
         x1 = 0
-        x2 = 600
+        x2 = 700
         pyglet.graphics.draw(4, pyglet.gl.GL_QUADS, ('v2f', (x1, y1, x1, y2, x2, y2, x2, y1)))
         self.chrom_object.draw()
 

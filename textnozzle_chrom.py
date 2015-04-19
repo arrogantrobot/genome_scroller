@@ -45,7 +45,7 @@ class TextNozzleChrom:
     line = self.fh.readline().strip()
     if line.startswith(">"):
       self.chrom = line[1:]
-      print self.chrom
+      #print self.chrom
       line = self.readline_set_chrom()
     return line
 
